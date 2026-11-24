@@ -47,7 +47,15 @@ def main() -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     # Exactly the line, no trailing newline: the file is the entry.
     path.write_text(text, encoding="utf-8")
+    # Round-trip verification: the graded file must be byte-for-byte the
+    # line above, or the run has failed and must say so loudly.
+    written = path.read_text(encoding="utf-8")
+    if written != text:
+        raise SystemExit(
+            f"verification failed: {path} does not match the entry line"
+        )
     print(f"wrote {len(text)} chars ({len(text.encode('utf-8'))} bytes) to {path}")
+    print("verified: file matches the entry line exactly")
 
 
 if __name__ == "__main__":
